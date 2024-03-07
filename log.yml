@@ -1,0 +1,20 @@
+- name: Collect log files from Server
+  hosts: controller
+  tasks:
+    - name: Collect log files
+      fetch:
+        src: /var/log/syslog
+        dest: /home/jay/Collectlog
+        flat: yes
+      register: syslog
+      ignore_errors: yes
+
+    - name: View syslog
+      debug:
+        var: syslog
+      when: syslog.failed
+
+    - name: Error message
+      debug:
+        msg: "Failed to collect log files from the server. The file '/var/log/syslog' is not readable."
+      when: syslog.failed
